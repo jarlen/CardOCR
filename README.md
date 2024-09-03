@@ -11,7 +11,7 @@
 
 - ### **[商务洽谈](https://gitee.com/jarlen/card-ocrad/blob/main/qrcode.PNG)**
 
-  ![](https://gitee.com/jarlen/card-ocrad/blob/main/qrcode.PNG)
+![image](https://github.com/user-attachments/assets/f24cfb76-e1a5-48ab-98f6-6824ba5a98bf)
 
 
 # 使用指南
