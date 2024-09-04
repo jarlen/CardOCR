@@ -7,7 +7,9 @@
 1. 车牌识别除了支持普通的蓝色、黄色、警用等车牌外，同时也支持新能源车牌。
 1. 驾驶证识别率大幅提升，证件识别实现自动对焦锁定，用户体验大幅提升。
 
-- ### **[体验下载](https://gitee.com/jarlen/card-ocrad/blob/main/CardOCR_enc.apk)**
+- ### **[体验下载](https://gitee.com/jarlen/card-ocrad/raw/main/CardOCR_enc.apk)**
+
+![image](https://github.com/user-attachments/assets/f24cfb76-e1a5-48ab-98f6-6824ba5a98bf)
 
 - ### **[商务洽谈](https://gitee.com/jarlen/card-ocrad/blob/main/qrcode.PNG)**
 
