@@ -6,12 +6,13 @@
 1. 识别率大幅提高，车牌号和身份证正常情况下毫秒级完成识别，成功率达到99%以上。
 1. 车牌识别除了支持普通的蓝色、黄色、警用等车牌外，同时也支持新能源车牌。
 1. 驾驶证识别率大幅提升，证件识别实现自动对焦锁定，用户体验大幅提升。
+1. apk插件为**离线识别**，不依赖网络或第三方云服务。
 
-- ### **[体验下载](https://gitee.com/jarlen/card-ocrad/raw/main/qrcode_apk.jpg)**
+- ### **[体验下载](https://raw.githubusercontent.com/jarlen/CardOCR/main/CardOCR_enc.apk)**
 
 ![image](https://gitee.com/jarlen/card-ocrad/raw/main/qrcode_apk.jpg)
 
-- ### **[商务洽谈](https://gitee.com/jarlen/card-ocrad/blob/main/qrcode.PNG)**
+- ### **[商务洽谈](https://gitee.com/jarlen/card-ocrad/raw/main/qrcode_me.jpg)**
 
 ![image](https://gitee.com/jarlen/card-ocrad/raw/main/qrcode_me.jpg)
 
