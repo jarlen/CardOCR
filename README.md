@@ -41,13 +41,15 @@
 * 启动识别服务
 
 ```java
-Intent intent = new Intent("Action 名称，下面的接口详细调用中会阐述");
+Intent intent = new Intent("cn.lvzhulin.zjsb.ocr");
 intent.putExtra("pkgName","第三方应用（调用方）的包名");
 intent.putExtra("ocrType","业务标识，例如:sfz");
 startActivityForResult(intent, REQUEST_CODE);
 ```
 
-> Action定义规则为：**识别服务提供方包名+"各个业务启动标识"**；例如，APK插件方式的身份证识别Action定义为：**cn.lvzhulin.zjsb**.ocr.sfz，其中"cn.lvzhulin.zjsb"为APK插件的应用包名。
+> Intent的**action**定义规则为：**识别服务提供方应用包名.ocr**；例如，APK插件方式的身份证识别action定义为：**cn.lvzhulin.zjsb.ocr**，"**cn.lvzhulin.zjsb**"为APK插件的应用包名；SDK集成方式的action定义为 **集成方应用包名.ocr**
+>
+> **ocrType**为业务标识，具体见各个业务说明。
 
 * 获取识别结果
 
@@ -75,7 +77,7 @@ Activity启动意图Action定义为： **sfz**
 请求启动：
 
 ```java
-Intent intent = new Intent("cn.lvzhulin.zjsb.ocr.sfz");
+Intent intent = new Intent("cn.lvzhulin.zjsb.ocr");
 intent.putExtra("pkgName","com.jarlen.app");
 intent.putExtra("ocrType","sfz");
 startActivityForResult(intent, 11);
@@ -106,7 +108,7 @@ Activity启动意图Action定义为： **passport**
 请求启动
 
 ```java
-Intent intent = new Intent("cn.lvzhulin.zjsb.ocr.passport");
+Intent intent = new Intent("cn.lvzhulin.zjsb.ocr");
 intent.putExtra("pkgName","com.jarlen.app");
 intent.putExtra("ocrType","passport");
 startActivityForResult(intent, 11);
@@ -137,7 +139,7 @@ Activity启动意图Action定义为： **visa**
 请求启动
 
 ```java
-Intent intent = new Intent("cn.lvzhulin.zjsb.ocr.visa");
+Intent intent = new Intent("cn.lvzhulin.zjsb.ocr");
 intent.putExtra("pkgName","com.jarlen.app");
 intent.putExtra("ocrType","visa");
 startActivityForResult(intent, 11);
@@ -169,7 +171,7 @@ Activity启动意图Action定义为： **cp**
 请求启动
 
 ```java
-Intent intent = new Intent("cn.lvzhulin.zjsb.ocr.cp");
+Intent intent = new Intent("cn.lvzhulin.zjsb.ocr");
 intent.putExtra("pkgName","com.jarlen.app");
 intent.putExtra("ocrType","cp");
 startActivityForResult(intent, 11);
@@ -198,7 +200,7 @@ Activity启动意图Action定义为：**driving**
 请求启动
 
 ```java
-Intent intent = new Intent("cn.lvzhulin.zjsb.ocr.driving");
+Intent intent = new Intent("cn.lvzhulin.zjsb.ocr");
 intent.putExtra("pkgName","com.jarlen.app");
 intent.putExtra("ocrType","driving");
 startActivityForResult(intent, 11);
@@ -229,7 +231,7 @@ Activity启动意图Action定义为： **vehicle**
 请求启动
 
 ```java
-Intent intent = new Intent("cn.lvzhulin.zjsb.ocr.vehicle");
+Intent intent = new Intent("cn.lvzhulin.zjsb.ocr");
 intent.putExtra("pkgName","com.jarlen.app");
 intent.putExtra("ocrType","vehicle");
 startActivityForResult(intent, 11);
