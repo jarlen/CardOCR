@@ -279,10 +279,6 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 | 定制UI   | 按照定制UI需求范围，评估投入进行收费 |
 | 新增功能 | 按照定制需求范围，评估投入进行收费   |
 
-**[商务洽谈]()**
-
-联系QQ:**791415371(同V)**
-
 # 附录
 
 ## 字段定义
