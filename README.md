@@ -3,10 +3,16 @@
 
 最新版本的OCR识别库具备以下明显优势：
 
-1. 识别率大幅提高，车牌号和身份证正常情况下毫秒级完成识别，成功率达到99%以上。
+**【证件识别】**为应用开发方提供身份证、驾驶证、行驶证、车牌号、护照、签证等的OCR识别服务；例如，通过扫描身份证，可以快速识别二代身份证上的身份证号等信息，并将这些信息返回给第三方应用。
+
+最新版本的OCR识别库具备以下明显优势：
+
+1. 识别不需要连接网络，即可实现离线识别。
+1. 识别率大幅提高，光线正常情况下毫秒级完成识别，成功率达到99%以上。
 1. 车牌识别除了支持普通的蓝色、黄色、警用等车牌外，同时也支持新能源车牌。
 1. 驾驶证识别率大幅提升，证件识别实现自动对焦锁定，用户体验大幅提升。
-1. apk插件为**离线识别**，不依赖网络或第三方云服务。
+1. 支持的证件丰富，目前支持身份证、车牌、机动车驾驶证、机动车行驶证、护照、签证。
+1. 支持插件安装与SDK集成方式，随意可选。
 
 - ### **[体验下载](https://raw.githubusercontent.com/jarlen/CardOCR/main/CardOCR_enc.apk)**
 
@@ -19,41 +25,59 @@
 
 # 使用指南
 
-## 接口简介
+**【证件识别】**以安装APK插件或集成Sdk的形式，为应用调用方提供证件识别服务。
 
-证件识别APK为通过Activity意图调用的方式为业务应用提供服务。在调用接口方法前，务必保证识别库插件已经安装。
+其中，APK插件的方式需要在调用接口方法前，务必保证识别库插件已经安装；而SDK的方式，需要在代码工程中引用相关SDK库。
 
-> 插件可以提示用户手动安装，也可由业务应用方内置，出发安装。插件的包名是：**cn.lvzhulin.zjsb**。
+> 【插件方式】可以提示用户手动安装，也可由业务应用方内置，触发提示用户安装。插件的包名是：**cn.lvzhulin.zjsb**。
+>
+> 【SDK引用方式】将**OCR-Sdk-1.5.aar**放入工程Module中的libs文件里，然后在build.grade文件依赖项配置如：`implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')`，另外，获取授权文件ocr.lic后，放入工程中assets直属文件夹下。
+>
 
-组件所提供的接口调用方法都是通过隐试启动activity并结合onActivityResult方法回调实现结果的回传来实现的，
+**调用方式**
 
-**【示例代码】**
+应用使用方通过隐试启动activity的方式启动识别服务，然后结合onActivityResult回调方法获取识别并解析结果。
+
+* 启动识别服务
 
 ```java
-Intent intent = new Intent(“Action 名称，下面的接口详细调用中会阐述”);
-Intent.putExtra(“pkgName”, “第三方应用（调用方）的包名”);
+Intent intent = new Intent("Action 名称，下面的接口详细调用中会阐述");
+intent.putExtra("pkgName","第三方应用（调用方）的包名");
+intent.putExtra("ocrType","业务标识，例如:sfz");
 startActivityForResult(intent, REQUEST_CODE);
 ```
 
-另外，API接口回传的数据结构有多种，包括直接返回部分数据信息，以及将所有识别的结果转换为json字符串后返回，调用方可以结合业务场景灵活选择处理。
+> Action定义规则为：**识别服务提供方包名+"各个业务启动标识"**；例如，APK插件方式的身份证识别Action定义为：**cn.lvzhulin.zjsb**.ocr.sfz，其中"cn.lvzhulin.zjsb"为APK插件的应用包名。
+
+* 获取识别结果
+
+```java
+@Override
+protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (resultCode != Activity.RESULT_OK) {
+        return;
+    }
+    String jsonResult = data.getStringExtra("result_json");
+}
+```
+
+> 识别结果被封装为JSON的形式。由于各个业务识别内容区别，调用方可通过识别内容结合字段获取对应的参数值。
 
 ## 接口描述
-插件根据业务场景的不通提供两种调用方式，第一种是直接通过相机拍照识别的调用，另一种是通过扫描本地已经存在的图片来完成识别，调用方可以根据业务场景需求灵活选择。
+插件根据业务场景的不通提供两种调用方式，第一种是直接通过相机拍照识别的调用，另一种是通过扫描本地已经存在的图片来完成识别，调用方可以根据业务场景需求灵活选择。下面以APK插件方式进行接口定义描述。
 
 ### 身份证识别
-Activity启动意图Action定义为： **cn.lvzhulin.zjsb.sfzsb.action**
+Activity启动意图Action定义为： **sfz**
 
 **【示例代码】**
 
 请求启动：
 
 ```java
-Intent intent = new Intent("cn.lvzhulin.zjsb.sfzsb.action");
-Intent.putExtra(“pkgName”, “com.jarlen.app”);
-/*身份证识别标识，
-*传0或者不传表示是识别正面，
-*传1表示识别反面*/
-Intent.putExtra(“sfzbs”,1);
+Intent intent = new Intent("cn.lvzhulin.zjsb.ocr.sfz");
+intent.putExtra("pkgName","com.jarlen.app");
+intent.putExtra("ocrType","sfz");
 startActivityForResult(intent, 11);
 ```
 
@@ -66,119 +90,25 @@ protected void onActivityResult(int requestCode, int resultCode, @Nullable Inten
     if (resultCode != RESULT_OK) {
         return;
     }
-    if (requestCode == 11) {
-        /*获取身份证号*/k
-        String sfzh = data.getStringExtra("sfzh");
-        /*json字符串包括姓名、性别、年龄、名族、身份证号、居住地址等所有信息*/
-        String json = data.getStringExtra("json");
-    }
+    /*
+    *json字符串包括姓名、性别、年龄、民族、出生、住址、公民身份号码等正面信息
+    *以及签发机关、有效期限、签发日期、有效期至等反面信息*/
+    String jsonResult = data.getStringExtra("result_json");
 }
 ```
-
-| 字段                                | 描述                     |
-| ----------------------------------- | ------------------------ |
-| xm                                  | 姓名                     |
-| xb                                  | 性别                     |
-| mz                                  | 名族                     |
-| sfzh                                | 身份证号                 |
-| csrq                                | 出生日期                 |
-| csdz                                | 出生地址                 |
-| blzd                                | 保留字段                 |
-| ----------------------------------- | 以下是身份证背面识别数据 |
-| qfjg                                | 签发机关                 |
-| yxqx                                | 有效期限                 |
-| qfrq                                | 签发日期                 |
-| yxqz                                | 有效期至                 |
-
-### 车牌识别
-Activity启动意图Action定义为： **cn.lvzhulin.zjsb.cpsb.action**
-
-**【示例代码】**
-
-请求启动
-
-```java
-Intent intent = new Intent("cn.lvzhulin.zjsb.cpsb.action");
-Intent.putExtra(“pkgName”, “包名”);
-startActivityForResult(intent, 11);
-```
-
-结果返回
-
-```java
-@Override
-protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    if (resultCode != RESULT_OK) {
-        return;
-    }
-    if (requestCode == 11) {
-        String number = data.getStringExtra("number"); 
-        String color = data.getStringExtra("color");
-    }
-}
-```
-
-| 字段   |   描述   |
-| ------ | :------: |
-| number |  车牌号  |
-| color  | 车牌颜色 |
-
-### 驾驶证识别
-Activity启动意图Action定义为： **cn.lvzhulin.zjsb.jszsb.action**
-
-**【示例代码】**
-
-请求启动
-
-```java
-Intent intent = new Intent("cn.lvzhulin.zjsb.jszsb.action");
-Intent.putExtra(“pkgName”, “包名”);
-startActivityForResult(intent, 11);
-```
-
-结果返回
-
-```java
-@Override
-protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    if (resultCode != RESULT_OK) {
-        return;
-    }
-    if (requestCode == 11) {
-        /*包括姓名、性别、身份证号等所有信息*/
-        String json = data.getStringExtra("json");
-    }
-}
-```
-
-> 结果json包括姓名、性别、身份证号等所有信息，通过JSONObject或转为Bean获取，主要字段参数描述如下：
-
-| 字段    | 描述           |
-| ------- | -------------- |
-| xm      | 姓名           |
-| xb      | 性别           |
-| sfzh    | 身份证号       |
-| csrq    | 出生日期       |
-| csdz    | 出生地址       |
-| cslzrq  | 初始领证日期   |
-| zjcx    | 准驾车型       |
-| yxqqsrq | 有效期起始日期 |
-| yxjzrq  | 有效截止日期   |
-| yxqx    | 有效期限       |
-| blzd    | 保留字段       |
 
 ### 护照识别
-Activity启动意图Action定义为： **cn.lvzhulin.zjsb.passport.action**
+
+Activity启动意图Action定义为： **passport**
 
 **【示例代码】**
 
 请求启动
 
 ```java
-Intent intent = new Intent("cn.lvzhulin.zjsb.passport.action");
-Intent.putExtra(“pkgName”, “包名”);
+Intent intent = new Intent("cn.lvzhulin.zjsb.ocr.passport");
+intent.putExtra("pkgName","com.jarlen.app");
+intent.putExtra("ocrType","passport");
 startActivityForResult(intent, 11);
 ```
 
@@ -191,71 +121,29 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     if (resultCode != RESULT_OK) {
         return;
     }
-    if (requestCode == 11) {
-        /*获取所有信息*/
-        String json = data.getStringExtra("data");
-    }
+     /*
+    *json字符串包括姓名、性别、住址、出生日期、证号、初始领证日期、准驾车型、
+    *有效起始日期、有效期限、有效截止日期等信息*/
+    String jsonResult = data.getStringExtra("result_json");
 }
 ```
 
-> 结果json包括姓名、性别、身份证号等所有信息，通过JSONObject或转为Bean获取，主要字段参数描述如下：
+### 签证识别
 
-| 字段     | 描述           |
-| -------- | -------------- |
-| hzlx     | 护照类型       |
-| hzhmmrz  | 护照号码MRZ    |
-| bgxm     | 本国姓名       |
-| ywxm     | 英文姓名       |
-| xb       | 性别           |
-| csrq     | 出生日期       |
-| yxqz     | 有效期至       |
-| qfgdm    | 签发国代码     |
-| ywx      | 英文姓         |
-| ywm      | 英文名         |
-| mrz1     | MRZ1           |
-| mrz2     | MRZ2           |
-| czrgjdm  | 持证人国籍代码 |
-| hzhm     | 护照号码       |
-| csdd     | 出生地点       |
-| qfdd     | 签发地点       |
-| qfrq     | 签发日期       |
-| rfid_mrz | RFID MRZ       |
-| ocr_mrz  | OCR MRZ        |
-| csddpy   | 出生地点拼音   |
+Activity启动意图Action定义为： **visa**
 
-### 浏览本地图片识别
+**【示例代码】**
 
-Activity启动意图Action定义为： **cn.lvzhulin.zjsb.picture.action**
-
-【代码示例】
+请求启动
 
 ```java
-Intent intent = new Intent(“cn.lvzhulin.zjsb.picture.action”); //action名称
-intent.putExtra(“pkgName”, “调用方的包名”);
-intent.putExtra(“picture_type”, type);//type是业务类型，下面会定义
-intent.putExtra(“path”, filepath);//path是图片的存储路径，包括文件名
-startActivityForResult(intent, REQUEST_CODE);
+Intent intent = new Intent("cn.lvzhulin.zjsb.ocr.visa");
+intent.putExtra("pkgName","com.jarlen.app");
+intent.putExtra("ocrType","visa");
+startActivityForResult(intent, 11);
 ```
-其中type定义如下：
-| type类型名称 | 传入值 |
-|----------|-----|
-| 识别车牌     | 1   |
-| 识别身份证    | 2   |
-| 识别驾照     | 3   |
-| 识别护照     | 4   |
 
-通过onActivityForResult获取，通过intent.getIntExtra(“type”)获取业务类型，然后根据以上每一个业务定义的返回结果标识来获取结果，
-
-例如：调用接口传入本地的车牌号图片路径识别车牌号：
-
-```java
-Intent intent = new Intent(“cn.lvzhulin.zjsb.picture.action”); 
-intent.putExtra(“pkgName”, “调用方的包名”);
-intent.putExtra(“picture_type”, 1); //1标识识别车牌
-intent.putExtra(“path”, “图片路径”);//车牌号图片存储路径
-startActivityForResult(intent, REQUEST_CODE);
-```
-结果返回：
+结果返回
 
 ```java
 @Override
@@ -264,21 +152,105 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     if (resultCode != RESULT_OK) {
         return;
     }
-    if (requestCode == 11) {
-        int type = data.getIntExtra("type", 0);
-        if (type == 0) { //type是0表示识别失败
-            /*识别失败*/
-        } else if (type == 1) { //type是1表示识别车牌
-            String number = data.getStringExtra("number"); //获取车牌号信息
-            String color = data.getStringExtra("color");//获取车牌颜色
-        }
-    }
+     /*
+    *json字符串包括证件类型、本国姓名、英文姓名、性别、出生日期、有效期至、签发国代码、
+    *英文姓、英文名、MRZ1、MRZ2、持证人国籍代码、证件号码、护照号码/通行证号码、签发地点、
+    *签发日期、来往次数、出访日期、离境日期、停留天数、签证种类等信息*/
+    String jsonResult = data.getStringExtra("result_json");
 }
 ```
-数据获取成功后，可以参考【车牌识别】结果来处理；
-**注意！**如果获取到的type值是0，标识识别失败！
 
-# 使用授权
+### 车牌识别
+
+Activity启动意图Action定义为： **cp**
+
+**【示例代码】**
+
+请求启动
+
+```java
+Intent intent = new Intent("cn.lvzhulin.zjsb.ocr.cp");
+intent.putExtra("pkgName","com.jarlen.app");
+intent.putExtra("ocrType","cp");
+startActivityForResult(intent, 11);
+```
+
+结果返回
+
+```java
+@Override
+protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (resultCode != RESULT_OK) {
+        return;
+    }
+    /*
+    *json字符串包括号牌号码、车辆颜色*/
+    String jsonResult = data.getStringExtra("result_json");
+}
+```
+
+### 驾驶证识别
+Activity启动意图Action定义为：**driving**
+
+**【示例代码】**
+
+请求启动
+
+```java
+Intent intent = new Intent("cn.lvzhulin.zjsb.ocr.driving");
+intent.putExtra("pkgName","com.jarlen.app");
+intent.putExtra("ocrType","driving");
+startActivityForResult(intent, 11);
+```
+
+结果返回
+
+```java
+@Override
+protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (resultCode != RESULT_OK) {
+        return;
+    }
+    /*
+    *json字符串包括姓名、性别、住址、出生日期、证号、初始领证日期、准驾车型、
+    *有效起始日期、有效期限、有效截止日期等信息*/
+    String jsonResult = data.getStringExtra("result_json");
+}
+```
+
+### 行驶证识别
+
+Activity启动意图Action定义为： **vehicle**
+
+**【示例代码】**
+
+请求启动
+
+```java
+Intent intent = new Intent("cn.lvzhulin.zjsb.ocr.vehicle");
+intent.putExtra("pkgName","com.jarlen.app");
+intent.putExtra("ocrType","vehicle");
+startActivityForResult(intent, 11);
+```
+
+结果返回
+
+```java
+@Override
+protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (resultCode != RESULT_OK) {
+        return;
+    }
+    /*
+    *json字符串包括号牌号码、车辆类型、所有人、住址、使用性质、品牌型号、车辆识别代号、
+    *发动机号码、注册日期、发证日期等信息*/
+    String jsonResult = data.getStringExtra("result_json");
+}
+```
+# 授权说明
 
 ## 授权信息
 
@@ -286,16 +258,19 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 | 类别           | 说明                                                         |
 | -------------- | ------------------------------------------------------------ |
-| 调用方应用签名 | 可通过命令'keytool -printcert -jarfile xxx.apk'或其他工具读取 |
+| 调用方应用签名 | 可通过命令'keytool -printcert -jarfile xxx.apk'或其他工具读取sha1值<br>亦或提供相关apk由我读取。 |
 | 应用包名       | 与build.gradle中配置的applicationId一致                      |
+| 授权时间       | 一般按年为单位授权，特殊情况另算                             |
+
+>获取授权后，会生成授权文件ocr.lic，将其放入工程assets文件夹直属目录下即可。
 
 ## 费用说明
 
-| 类别   | 描述     |
-| ------ | -------- |
-| 按应用 | 99元/年  |
-| 按签名 | 298元/年 |
-| 终身   | 698元/年 |
+| 类别       | 描述                                   |
+| ---------- | -------------------------------------- |
+| 按应用     | APK插件：99元/年<br>SDK集成：198元/年  |
+| 按应用签名 | APK插件：299元/年<br>SDK集成：598元/年 |
+| 终身       | APK插件：1299元<br>SDK集成：2498元     |
 
 ### 定制服务
 
@@ -303,3 +278,68 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 | -------- | ------------------------------------ |
 | 定制UI   | 按照定制UI需求范围，评估投入进行收费 |
 | 新增功能 | 按照定制需求范围，评估投入进行收费   |
+
+**[商务洽谈]()**
+
+联系QQ:**791415371(同V)**
+
+# 附录
+
+## 字段定义
+
+| 字段                          | 字段说明            |
+| ----------------------------- | ------------------- |
+| name                          | 姓名                |
+| sex                           | 性别                |
+| nation                        | 民族                |
+| birth                         | 出生                |
+| address                       | 住址                |
+| gmsfhm                        | 公民身份号码        |
+| authority                     | 签发机关            |
+| valid_period                  | 有效期限            |
+| passport_issue_date           | 签发日期            |
+| expire_date                   | 有效期至            |
+| birth_date                    | 出生日期            |
+| first_issue_date              | 初始领证日期        |
+| driving_class                 | 准驾车型            |
+| effective_start_date          | 有效起始日期        |
+| effective_end_date            | 有效截止日期        |
+| nationality                   | 国籍                |
+| passport_type                 | 护照类型            |
+| passport_number_MRZ           | 护照号码MRZ         |
+| local_name                    | 本国姓名            |
+| english_name                  | 英文姓名            |
+| issue_country_code            | 签发国代码          |
+| english_surname               | 英文姓              |
+| english_given_name            | 英文名              |
+| mrz1                          | MRZ1                |
+| mrz2                          | MRZ2                |
+| holder_nationality_code       | 持证人国籍代码      |
+| plate_number                  | 号牌号码            |
+| vehicle_type                  | 车辆类型            |
+| owner                         | 所有人              |
+| model                         | 品牌型号            |
+| vehicle_identification_number | 车辆识别代号        |
+| engine_number                 | 发动机号码          |
+| register_date                 | 注册日期            |
+| vehicle_issue_date            | 发证日期            |
+| use_character                 | 使用性质            |
+| vehicle_color                 | 车辆颜色            |
+| full_pic_path                 | 完整图片路径        |
+| crop_pic_path                 | 裁剪图片路径        |
+| head_pic_path                 | 头像图片路径        |
+| pic_source_type               | 图片来源类型        |
+| driving_license_number        | 证号                |
+| license_type                  | 证件类型            |
+| export_number_MRZ             | MRZ导出号码         |
+| zjhm                          | 证件号码            |
+| passport_number               | 护照号码/通行证号码 |
+| issue_place                   | 签发地点            |
+| remark                        | 备注                |
+| visit_times                   | 来往次数            |
+| visit_date                    | 出访日期            |
+| leave_date                    | 离境日期            |
+| stay_days                     | 停留天数            |
+| visa_type                     | 签证种类            |
+| extend                        | 保留                |
+
