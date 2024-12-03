@@ -70,7 +70,7 @@ protected void onActivityResult(int requestCode, int resultCode, @Nullable Inten
 插件根据业务场景的不通提供两种调用方式，第一种是直接通过相机拍照识别的调用，另一种是通过扫描本地已经存在的图片来完成识别，调用方可以根据业务场景需求灵活选择。下面以APK插件方式进行接口定义描述。
 
 ### 身份证识别
-Activity启动意图Action定义为： **sfz**
+Activity启动意图参数**ocrType**定义为： **sfz**
 
 **【示例代码】**
 
@@ -101,7 +101,7 @@ protected void onActivityResult(int requestCode, int resultCode, @Nullable Inten
 
 ### 护照识别
 
-Activity启动意图Action定义为： **passport**
+Activity启动意图参数**ocrType**定义为： **passport**
 
 **【示例代码】**
 
@@ -132,7 +132,7 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 ### 签证识别
 
-Activity启动意图Action定义为： **visa**
+Activity启动意图参数**ocrType**定义为： **visa**
 
 **【示例代码】**
 
@@ -164,7 +164,7 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 ### 车牌识别
 
-Activity启动意图Action定义为： **cp**
+Activity启动意图参数**ocrType**定义为： **cp**
 
 **【示例代码】**
 
@@ -193,7 +193,7 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 ```
 
 ### 驾驶证识别
-Activity启动意图Action定义为：**driving**
+Activity启动意图参数**ocrType**定义为：**driving**
 
 **【示例代码】**
 
@@ -224,7 +224,7 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 ### 行驶证识别
 
-Activity启动意图Action定义为： **vehicle**
+Activity启动意图参数**ocrType**定义为： **vehicle**
 
 **【示例代码】**
 
