@@ -28,7 +28,7 @@
 
 > 【插件方式】可以提示用户手动安装，也可由业务应用方内置，触发提示用户安装。插件的包名是：**cn.lvzhulin.zjsb**。
 >
-> 【SDK引用方式】将**OCR-Sdk-1.5.aar**放入工程Module中的libs文件里，然后在build.grade文件依赖项配置如：`implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')`，另外，获取授权文件ocr.lic后，放入工程中assets直属文件夹下。
+> 【SDK引用方式】将**OCR-Sdk-1.6.aar**放入工程Module中的libs文件里，然后在build.grade文件依赖项配置如：`implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')`，另外，获取授权文件ocr.lic后，放入工程中assets直属文件夹下。
 >
 
 **调用方式**
