@@ -11,7 +11,7 @@
 1. 支持的证件丰富，目前支持身份证、车牌、机动车驾驶证、机动车行驶证、护照、签证。
 1. 支持插件安装与SDK集成方式，随意可选。
 
-- ### **[体验下载](https://raw.githubusercontent.com/jarlen/CardOCR/main/CardOCR_enc.apk)**
+- ### **[体验下载](https://raw.githubusercontent.com/jarlen/CardOCR/main/CardOCR_V2.250115.apk)**
 
 ![image](https://gitee.com/jarlen/card-ocrad/raw/main/qrcode_apk.jpg)
 
