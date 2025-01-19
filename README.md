@@ -28,7 +28,7 @@
 
 > 【插件方式】可以提示用户手动安装，也可由业务应用方内置，触发提示用户安装。插件的包名是：**cn.lvzhulin.zjsb**。
 >
-> 【SDK引用方式】将**OCR-Sdk-1.6.aar**放入工程Module中的libs文件里，然后在build.grade文件依赖项配置如：`implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')`，另外，获取授权文件ocr.lic后，放入工程中assets直属文件夹下。
+> 【SDK引用方式】将**OCR-Sdk-1.7.aar**放入工程Module中的libs文件里，然后在build.grade文件依赖项配置如：`implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')`，另外，获取授权文件ocr.lic后，放入工程中assets直属文件夹下。
 >
 
 **调用方式**
@@ -41,12 +41,15 @@
 Intent intent = new Intent("cn.lvzhulin.zjsb.ocr");
 intent.putExtra("pkgName","第三方应用（调用方）的包名");
 intent.putExtra("ocrType","业务标识，例如:sfz");
+intent.putExtra("isDebug","调试模式");
 startActivityForResult(intent, REQUEST_CODE);
 ```
 
 > Intent的**action**定义规则为：**识别服务提供方应用包名.ocr**；例如，APK插件方式的身份证识别action定义为：**cn.lvzhulin.zjsb.ocr**，"**cn.lvzhulin.zjsb**"为APK插件的应用包名；SDK集成方式的action定义为 **集成方应用包名.ocr**
 >
 > **ocrType**为业务标识，具体见各个业务说明。
+>
+> **isDebug**标识调试模式，开启后，将会打印日志在**手机内部存储/lvzhulin/log**下
 
 * 获取识别结果
 
